@@ -436,3 +436,5 @@ $RECYCLE.BIN/
 bin
 obj
 *db
+
+appsettings.json

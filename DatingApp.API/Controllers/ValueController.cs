@@ -5,9 +5,11 @@ using DatingApp.API.Models;
 using DatingApp.API.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DatingApp.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/value/[action]")]
     public class ValueController : ControllerBase
@@ -18,7 +20,7 @@ namespace DatingApp.API.Controllers
         {
             this.valueService = valueService;
         }
-
+        
         [HttpGet]
         public IEnumerable<Value> GetValues()
         {
