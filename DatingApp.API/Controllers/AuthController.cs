@@ -9,10 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using Newtonsoft.Json;
 
 namespace DatingApp.API.Controllers
 {
-    [Route("/api/auth")]
+    [Route("/api/auth/[action]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -25,10 +26,9 @@ namespace DatingApp.API.Controllers
             this.configuration = configuration;
         }
 
-        [HttpPost("/register")]
+        [HttpPost]
         public async Task<IActionResult> Register([FromBody] UserRegisterDto model)
         {
-            // validate request
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -51,7 +51,7 @@ namespace DatingApp.API.Controllers
             return StatusCode(201);
         }
 
-        [HttpPost("/login")]
+        [HttpPost]
         public async Task<IActionResult> Login(UserLoginDto model)
         {
             var userFromRepo = await authRepository.Login(model.UserName, model.Password);
@@ -80,7 +80,7 @@ namespace DatingApp.API.Controllers
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return Ok(tokenHandler.WriteToken(token));
+            return Ok(JsonConvert.SerializeObject(tokenHandler.WriteToken(token)));
         }
     }
 }
