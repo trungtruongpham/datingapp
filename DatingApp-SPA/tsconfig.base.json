@@ -12,9 +12,7 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "es2020",
-    "lib": [
-      "es2018",
-      "dom"
-    ]
+    "typeRoots": ["node_module/@types", "src/typing.d.ts"],
+    "lib": ["es2018", "dom"]
   }
 }
