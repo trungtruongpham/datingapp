@@ -11,6 +11,7 @@ namespace DatingApp.API.Data
         }
         public virtual DbSet<Value> Values { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Photo> Photos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -18,6 +19,7 @@ namespace DatingApp.API.Data
 
             builder.Entity<Value>().ToTable("Values");
             builder.Entity<User>().ToTable("Users");
+            builder.Entity<Photo>().ToTable("Photos");
         }
     }
 }

@@ -17,9 +17,8 @@ namespace DatingApp.API.Repository
     }
     public class BaseRepository<T> : IBaseRepository<T> where T : BaseModel
     {
-        public AppDbContext context { get; set; }
-        public DbSet<T> dbSet { get; set; }
-
+        protected AppDbContext context;
+        protected DbSet<T> dbSet;
         public BaseRepository(AppDbContext context)
         {
             this.context = context;
