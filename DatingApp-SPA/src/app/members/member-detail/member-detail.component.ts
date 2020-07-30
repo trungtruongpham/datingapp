@@ -10,8 +10,6 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./member-detail.component.css'],
 })
 export class MemberDetailComponent implements OnInit {
-  user: User;
-  id: string = this.route.snapshot.paramMap.get('id');
 
   constructor(
     private userService: UserService,
@@ -19,20 +17,40 @@ export class MemberDetailComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
 
+  user: User;
+  images: any[];
+  activeIndex = 2;
+  id: string = this.route.snapshot.paramMap.get('id');
+
+  responsiveOptions: any[] = [
+    {
+        breakpoint: '1024px',
+        numVisible: 5
+    },
+    {
+        breakpoint: '768px',
+        numVisible: 3
+    },
+    {
+        breakpoint: '560px',
+        numVisible: 1
+    }
+];
+
   ngOnInit(): void {
-    this.loadUser();
+    this.route.data.subscribe((data) => {
+      this.user = data.user;
+      this.images = data.user.photos;
+    });
   }
 
-  loadUser(): void {
-    this.userService.getUser(this.id).subscribe(
-      (user: User) => {
-        
-        this.user = user;
-        this.alertify.success('Get user success');
-      },
-      (error) => {
-        this.alertify.error(error);
-      }
-    );
+  getActiveIndex(): number {
+    return this.activeIndex;
+  }
+
+  setActiveIndex(newValue): void {
+    if (this.images && 0 <= newValue && newValue <= this.images.length - 1) {
+      this.activeIndex = newValue;
+    }
   }
 }

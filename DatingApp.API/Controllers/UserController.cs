@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Collections.Generic;
 using System;
 using System.Threading.Tasks;
@@ -40,7 +41,31 @@ namespace DatingApp.API.Controllers
 
             var userToReturn = _mapper.Map<UserForDetailDto>(user);
 
+            userToReturn.Age = DateTime.Now.Year - userToReturn.DateOfBirth.Year;
+
             return Ok(userToReturn);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser([FromRoute] Guid id, [FromBody] UserForUpdateDto userForUpdate)
+        {
+            Console.WriteLine(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            Console.Write(id);
+            if (!id.Equals(new Guid(User.FindFirst(ClaimTypes.NameIdentifier).Value)))    
+            {
+                return Unauthorized();
+            }
+
+            var userFromRepo = await _repo.GetUser(id);
+
+            _mapper.Map(userForUpdate, userFromRepo);
+
+            if (await _repo.SaveAll())
+            {
+                return NoContent();
+            }
+
+            throw new Exception("$Updating user {id} failed on save");
         }
     }
 }

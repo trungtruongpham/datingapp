@@ -2,6 +2,7 @@ import { appRoutes } from './routes';
 import { MemberListComponent } from './members/member-list/member-list.component';
 import { MemberCardComponent } from './members/member-card/member-card.component';
 import { MemberDetailComponent } from './members/member-detail/member-detail.component';
+import { MemberEditComponent } from './members/member-edit/member-edit.component';
 import { ListComponent } from './list/list.component';
 import { MessagesComponent } from './messages/messages.component';
 import { NavComponent } from './nav/nav.component';
@@ -9,6 +10,10 @@ import { AuthService } from './_services/auth.service';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { ErrorInterceptorProvider } from './_services/error.interceptor';
+import { MemberDetailResolver } from './_resolvers/member-detail.resolver';
+import { MemberListResolver } from './_resolvers/member-list.resolver';
+import { MemberEditResolver } from './_resolvers/member-edit.resolver';
+import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes.guard';
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -18,6 +23,8 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CardModule } from 'primeng/card';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { GalleriaModule } from 'primeng/galleria';
 
 import { RouterModule } from '@angular/router';
 import { UserService } from './_services/user.service';
@@ -38,6 +45,7 @@ export function tokenGetter(): string {
     MessagesComponent,
     MemberCardComponent,
     MemberDetailComponent,
+    MemberEditComponent,
   ],
   imports: [
     BrowserModule,
@@ -55,8 +63,18 @@ export function tokenGetter(): string {
         disallowedRoutes: ['localhost:5000/api/auth'],
       },
     }),
+    TabsModule.forRoot(),
+    GalleriaModule,
   ],
-  providers: [AuthService, ErrorInterceptorProvider, UserService],
+  providers: [
+    AuthService,
+    ErrorInterceptorProvider,
+    UserService,
+    MemberDetailResolver,
+    MemberListResolver,
+    MemberEditResolver,
+    PreventUnsavedChanges,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

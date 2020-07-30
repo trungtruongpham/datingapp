@@ -19,7 +19,8 @@
       </a>
 
       <div class="dropdown-menu mt-3" *dropdownMenu>
-        <a class="dropdown-item fa fa-user" href="#">Edit profile</a>
+        <a class="dropdown-item fa fa-user" [routerLink]="['/member/edit']">Edit
+          profile</a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item fa fa-sign-out" (click)="logOut()">Logout</a>
       </div>
