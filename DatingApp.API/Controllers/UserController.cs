@@ -49,8 +49,6 @@ namespace DatingApp.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser([FromRoute] Guid id, [FromBody] UserForUpdateDto userForUpdate)
         {
-            Console.WriteLine(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            Console.Write(id);
             if (!id.Equals(new Guid(User.FindFirst(ClaimTypes.NameIdentifier).Value)))    
             {
                 return Unauthorized();

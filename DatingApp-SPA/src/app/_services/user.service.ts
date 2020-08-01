@@ -19,4 +19,9 @@ export class UserService {
   getUser(id): Observable<User>{
     return this.http.get<User>(this.baseUrl + 'user/GetUser/' + id);
   }
+
+  // tslint:disable-next-line: typedef
+  updateUser(id: string, user: User){
+    return this.http.put(this.baseUrl + 'user/UpdateUser/' + id, user);
+  }
 }
