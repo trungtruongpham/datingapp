@@ -1,0 +1,18 @@
+<div class="row">
+    <div class="col-sm-2" *ngFor="let photo of photos">
+        <img src="{{photo.url}}" class="img-thumbnail p-1" alt="">
+        <div class="text-center">
+            <button type="button" class="btn btn-sm">Main</button>
+            <button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash-o"></i></button>
+        </div>
+    </div>
+</div>
+
+<p-fileUpload #fileInput name="File" url="{{this.url}}" (onSelect)="this.selectHandler()"
+    (uploadHandler)="this.uploadHandler()" multiple="multiple" accept="image/*" maxFileSize="1000000">
+    <ng-template pTemplate="content">
+        <ul *ngIf="uploadedFiles.length">
+            <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
+        </ul>
+    </ng-template>
+</p-fileUpload>

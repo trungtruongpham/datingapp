@@ -44,13 +44,15 @@
                         <p>{{user.interests}}</p>
                     </tab>
                     <tab heading="Photos">
-                        <p-galleria [value]="images" [responsiveOptions]="responsiveOptions" [containerStyle]="{'max-width':'1024px'}" [numVisible]="5">
+                        <p-galleria [value]="images" [responsiveOptions]="responsiveOptions"
+                            [containerStyle]="{'max-width':'1024px'}" [numVisible]="5">
                             <ng-template pTemplate="item" let-item>
                                 <img [src]="item.url" style="width: 70%; display: block;" [alt]="item.description" />
                             </ng-template>
                             <ng-template pTemplate="thumbnail" let-item>
-                                <div class="p-grid p-nogutter p-justify-center">
-                                    <img [src]="item.url" />
+                                <div class="p-grid p-nogutter p-justify-center "
+                                    style="display: block">
+                                    <img class="img-thumbnail" [src]="item.url" />
                                 </div>
                             </ng-template>
                         </p-galleria>

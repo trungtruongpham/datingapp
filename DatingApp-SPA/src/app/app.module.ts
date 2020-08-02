@@ -7,6 +7,7 @@ import { ListComponent } from './list/list.component';
 import { MessagesComponent } from './messages/messages.component';
 import { NavComponent } from './nav/nav.component';
 import { AuthService } from './_services/auth.service';
+import { FileUploadService } from './_services/file-upload.service';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { ErrorInterceptorProvider } from './_services/error.interceptor';
@@ -14,6 +15,7 @@ import { MemberDetailResolver } from './_resolvers/member-detail.resolver';
 import { MemberListResolver } from './_resolvers/member-list.resolver';
 import { MemberEditResolver } from './_resolvers/member-edit.resolver';
 import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes.guard';
+import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -25,6 +27,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CardModule } from 'primeng/card';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { GalleriaModule } from 'primeng/galleria';
+import { FileUploadModule } from 'primeng/fileupload';
 
 import { RouterModule } from '@angular/router';
 import { UserService } from './_services/user.service';
@@ -46,6 +49,7 @@ export function tokenGetter(): string {
     MemberCardComponent,
     MemberDetailComponent,
     MemberEditComponent,
+    PhotoEditorComponent,
   ],
   imports: [
     BrowserModule,
@@ -65,11 +69,13 @@ export function tokenGetter(): string {
     }),
     TabsModule.forRoot(),
     GalleriaModule,
+    FileUploadModule,
   ],
   providers: [
     AuthService,
     ErrorInterceptorProvider,
     UserService,
+    FileUploadService,
     MemberDetailResolver,
     MemberListResolver,
     MemberEditResolver,
