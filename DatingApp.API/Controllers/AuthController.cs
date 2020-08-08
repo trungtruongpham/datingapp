@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using Newtonsoft.Json;
+using AutoMapper;
 
 namespace DatingApp.API.Controllers
 {
@@ -19,11 +20,13 @@ namespace DatingApp.API.Controllers
     {
         private IAuthRepository authRepository;
         private IConfiguration configuration;
+        private IMapper _mapper;
 
-        public AuthController(IAuthRepository authRepository, IConfiguration configuration)
+        public AuthController(IAuthRepository authRepository, IConfiguration configuration, IMapper mapper)
         {
             this.authRepository = authRepository;
             this.configuration = configuration;
+            this._mapper = mapper;
         }
 
         [HttpPost]
@@ -66,8 +69,6 @@ namespace DatingApp.API.Controllers
                 new Claim(ClaimTypes.Name, userFromRepo.UserName),
             };
 
-            Console.Write(claims[0].ToString());
-
             var key = new SymmetricSecurityKey(Encoding.UTF8
                 .GetBytes(configuration.GetSection("AppSettings:SecretKey").Value));
 
@@ -82,7 +83,15 @@ namespace DatingApp.API.Controllers
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return Ok(JsonConvert.SerializeObject(tokenHandler.WriteToken(token)));
+            var user = _mapper.Map<UserForListDto>(userFromRepo);
+            var tokenReturn = tokenHandler.WriteToken(token);
+            Console.Write(JsonConvert.SerializeObject(user));
+
+            return Ok(JsonConvert.SerializeObject(new
+            {
+                token = tokenHandler.WriteToken(token),
+                user
+            }));
         }
     }
 }

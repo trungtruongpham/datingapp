@@ -15,11 +15,24 @@ namespace DatingApp.API.Repository
         Task<bool> SaveAll();
         Task<Photo> GetPhoto(Guid id);
         Task<Photo> GetMainPhotoForUser(Guid userId);
+        bool DeletePhoto(Photo photoToDelete);
     }
     public class DatingRepository : BaseRepository<User>, IDatingRepository
     {
         public DatingRepository(AppDbContext context) : base(context)
         {
+        }
+
+        public bool DeletePhoto(Photo photoToDelete)
+        {
+            if (photoToDelete == null)
+            {
+                return false;
+            }
+
+            context.Photos.Remove(photoToDelete);
+
+            return true;
         }
 
         public async Task<Photo> GetMainPhotoForUser(Guid userId)

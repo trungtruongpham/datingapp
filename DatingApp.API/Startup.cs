@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Http;
 using DatingApp.API.Helpers;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Newtonsoft.Json.Serialization;
 
 namespace DatingApp.API
 {
@@ -43,6 +44,9 @@ namespace DatingApp.API
                     .AddNewtonsoftJson(opt =>
                     {
                         opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                        opt.SerializerSettings.ContractResolver = new DefaultContractResolver{
+                            NamingStrategy = new CamelCaseNamingStrategy()
+                        };
                     });
             services.AddCors();
             services.AddAutoMapper(typeof(DatingRepository).Assembly);

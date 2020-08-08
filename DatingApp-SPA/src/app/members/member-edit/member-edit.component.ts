@@ -20,8 +20,10 @@ export class MemberEditComponent implements OnInit {
     private authService: AuthService
   ) {}
   @ViewChild('editForm') editForm: NgForm;
-  user: User;
   @HostListener('window:beforeunload', ['$event'])
+
+  user: User;
+  photoUrl: string;
   // tslint:disable-next-line: typedef
   unloadNotification($event: any) {
     if (this.editForm.dirty) {
@@ -33,11 +35,13 @@ export class MemberEditComponent implements OnInit {
     this.route.data.subscribe((data) => {
       this.user = data.user;
     });
+
+    this.authService.currentPhotoUrl.subscribe(
+      (photoUrl) => (this.user.photoUrl = photoUrl)
+    );
   }
 
   updateUser(): void {
-    console.log(this.authService.decodedToken.nameid);
-    console.log(this.user);
     this.userService
       .updateUser(this.authService.decodedToken.nameid, this.user)
       .subscribe(

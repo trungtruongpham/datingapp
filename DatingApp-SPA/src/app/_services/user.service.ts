@@ -31,4 +31,9 @@ export class UserService {
       {}
     );
   }
+
+  // tslint:disable-next-line: typedef
+  deletePhoto(userId: string, id: string) {
+    return this.http.delete(this.baseUrl + 'user/' + userId + '/photos/' + id);
+  }
 }
