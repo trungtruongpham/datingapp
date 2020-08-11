@@ -7,12 +7,14 @@ using DatingApp.API.DTO;
 using DatingApp.API.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using DatingApp.API.Helpers;
 
 namespace DatingApp.API.Controllers
 {
     [Route("api/user/[action]")]
     [ApiController]
     [Authorize]
+    [ServiceFilter(typeof(LogUserActivity))]
     public class UserController : ControllerBase
     {
         private IDatingRepository _repo;

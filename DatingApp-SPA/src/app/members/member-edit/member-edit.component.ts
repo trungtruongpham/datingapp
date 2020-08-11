@@ -6,6 +6,7 @@ import { NgForm } from '@angular/forms';
 import { UserService } from 'src/app/_services/user.service';
 import { AuthService } from 'src/app/_services/auth.service';
 import { PhotoEditorComponent } from '../photo-editor/photo-editor.component';
+import { TimeagoModule } from 'ngx-timeago';
 
 @Component({
   selector: 'app-member-edit',
@@ -21,7 +22,6 @@ export class MemberEditComponent implements OnInit {
   ) {}
   @ViewChild('editForm') editForm: NgForm;
   @HostListener('window:beforeunload', ['$event'])
-
   user: User;
   photoUrl: string;
   // tslint:disable-next-line: typedef

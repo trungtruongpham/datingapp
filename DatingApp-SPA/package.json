@@ -26,6 +26,7 @@
     "font-awesome": "^4.7.0",
     "ngx-bootstrap": "^5.6.1",
     "ngx-gallery": "^5.10.0",
+    "ngx-timeago": "^1.0.4",
     "ngx-webstorage-service": "^4.1.0",
     "primeicons": "^4.0.0",
     "primeng": "^9.1.3",

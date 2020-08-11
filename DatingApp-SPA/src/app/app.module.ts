@@ -28,6 +28,8 @@ import { CardModule } from 'primeng/card';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { GalleriaModule } from 'primeng/galleria';
 import { FileUploadModule } from 'primeng/fileupload';
+import { CalendarModule } from 'primeng/calendar';
+import { TimeagoModule } from 'ngx-timeago';
 
 import { RouterModule } from '@angular/router';
 import { UserService } from './_services/user.service';
@@ -71,6 +73,8 @@ export function tokenGetter(): string {
     TabsModule.forRoot(),
     GalleriaModule,
     FileUploadModule,
+    CalendarModule,
+    TimeagoModule.forRoot(),
   ],
   providers: [
     AuthService,
