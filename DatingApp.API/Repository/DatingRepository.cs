@@ -5,13 +5,14 @@ using DatingApp.API.Data;
 using DatingApp.API.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using DatingApp.API.Helpers;
 
 namespace DatingApp.API.Repository
 {
     public interface IDatingRepository
     {
         Task<User> GetUser(Guid id);
-        Task<IEnumerable<User>> GetUsers();
+        Task<PagedList<User>> GetUsers(UserParams userParams);
         Task<bool> SaveAll();
         Task<Photo> GetPhoto(Guid id);
         Task<Photo> GetMainPhotoForUser(Guid userId);
@@ -54,11 +55,11 @@ namespace DatingApp.API.Repository
             return user;
         }
 
-        public async Task<IEnumerable<User>> GetUsers()
+        public async Task<PagedList<User>> GetUsers(UserParams userParams)
         {
-            var users = await context.Users.Include(p => p.Photos).ToListAsync();
+            var users = context.Users.Include(p => p.Photos);
 
-            return users;
+            return await PagedList<User>.CreateAsync(users, userParams.PageNumber, userParams.PageSize);
         }
 
         public async Task<bool> SaveAll()

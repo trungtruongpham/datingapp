@@ -30,6 +30,7 @@ import { GalleriaModule } from 'primeng/galleria';
 import { FileUploadModule } from 'primeng/fileupload';
 import { CalendarModule } from 'primeng/calendar';
 import { TimeagoModule } from 'ngx-timeago';
+import { PaginatorModule } from 'primeng/paginator';
 
 import { RouterModule } from '@angular/router';
 import { UserService } from './_services/user.service';
@@ -75,6 +76,7 @@ export function tokenGetter(): string {
     FileUploadModule,
     CalendarModule,
     TimeagoModule.forRoot(),
+    PaginatorModule,
   ],
   providers: [
     AuthService,

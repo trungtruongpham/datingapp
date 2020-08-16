@@ -1,3 +1,4 @@
+using System.Xml;
 using System.Net;
 using System.ComponentModel.Design;
 using System;
@@ -45,7 +46,7 @@ namespace DatingApp.API
                     {
                         opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                         opt.SerializerSettings.ContractResolver = new DefaultContractResolver{
-                            NamingStrategy = new CamelCaseNamingStrategy()
+                            NamingStrategy = new CamelCaseNamingStrategy(),
                         };
                     });
             services.AddCors();

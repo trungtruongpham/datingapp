@@ -27,11 +27,13 @@ namespace DatingApp.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers([FromQuery] UserParams userParams)
         {
-            var users = await _repo.GetUsers();
+            var users = await _repo.GetUsers(userParams);
 
             var usersToReturn = _mapper.Map<IEnumerable<UserForListDto>>(users);
+
+            Response.AddPagination(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages);
 
             return Ok(usersToReturn);
         }
@@ -51,7 +53,7 @@ namespace DatingApp.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser([FromRoute] Guid id, [FromBody] UserForUpdateDto userForUpdate)
         {
-            if (!id.Equals(new Guid(User.FindFirst(ClaimTypes.NameIdentifier).Value)))    
+            if (!id.Equals(new Guid(User.FindFirst(ClaimTypes.NameIdentifier).Value)))
             {
                 return Unauthorized();
             }
