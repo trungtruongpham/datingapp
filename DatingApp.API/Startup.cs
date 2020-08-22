@@ -45,12 +45,13 @@ namespace DatingApp.API
                     .AddNewtonsoftJson(opt =>
                     {
                         opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-                        opt.SerializerSettings.ContractResolver = new DefaultContractResolver{
+                        opt.SerializerSettings.ContractResolver = new DefaultContractResolver
+                        {
                             NamingStrategy = new CamelCaseNamingStrategy(),
                         };
                     });
             services.AddCors();
-            services.AddAutoMapper(typeof(DatingRepository).Assembly);
+            services.AddAutoMapper(typeof(UserRepository).Assembly);
             services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
@@ -58,8 +59,11 @@ namespace DatingApp.API
 
             services.AddScoped<IValueService, ValueService>()
                     .AddScoped<IUnitOfWork, UnitOfWork>()
-                    .AddScoped<IAuthRepository, AuthRepository>()
-                    .AddScoped<IDatingRepository, DatingRepository>();
+                    .AddScoped<IAuthRepository, AuthRepository>();
+
+            services.AddScoped<IUserRepository, UserRepository>()
+                    .AddScoped<IPhotoRepository, PhotoRepository>()
+                    .AddScoped<ILikeRepository, LikeRepository>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>

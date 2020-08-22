@@ -8,6 +8,7 @@ using DatingApp.API.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using DatingApp.API.Helpers;
+using DatingApp.API.Models;
 
 namespace DatingApp.API.Controllers
 {
@@ -17,19 +18,32 @@ namespace DatingApp.API.Controllers
     [ServiceFilter(typeof(LogUserActivity))]
     public class UserController : ControllerBase
     {
-        private IDatingRepository _repo;
+        private IUserRepository _userRepository;
         private IMapper _mapper;
+        private ILikeRepository _likeRepository;
 
-        public UserController(IDatingRepository repo, IMapper mapper)
+        public UserController(IUserRepository userRepository, IMapper mapper, ILikeRepository likeRepository)
         {
-            this._repo = repo;
+            this._userRepository = userRepository;
             this._mapper = mapper;
+            this._likeRepository = likeRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetUsers([FromQuery] UserParams userParams)
         {
-            var users = await _repo.GetUsers(userParams);
+            var currentUserid = new Guid(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var userFromRepo = await _userRepository.GetUser(currentUserid);
+
+            userParams.UserId = currentUserid;
+
+            if (!string.IsNullOrEmpty(userParams.Gender))
+            {
+                userParams.Gender = userFromRepo.Gender == "male" ? "female" : "male";
+            }
+
+
+            var users = await _userRepository.GetUsers(userParams);
 
             var usersToReturn = _mapper.Map<IEnumerable<UserForListDto>>(users);
 
@@ -41,7 +55,7 @@ namespace DatingApp.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(Guid id)
         {
-            var user = await _repo.GetUser(id);
+            var user = await _userRepository.GetUser(id);
 
             var userToReturn = _mapper.Map<UserForDetailDto>(user);
 
@@ -58,16 +72,50 @@ namespace DatingApp.API.Controllers
                 return Unauthorized();
             }
 
-            var userFromRepo = await _repo.GetUser(id);
+            var userFromRepo = await _userRepository.GetUser(id);
 
             _mapper.Map(userForUpdate, userFromRepo);
 
-            if (await _repo.SaveAll())
+            if (await _userRepository.SaveAll())
             {
                 return NoContent();
             }
 
             throw new Exception("$Updating user {id} failed on save");
+        }
+
+        [HttpPost("{id}/like/{recipientId}")]
+        public async Task<IActionResult> LikeUser(Guid id, Guid recipientId)
+        {
+            if (!id.Equals(new Guid(User.FindFirst(ClaimTypes.NameIdentifier).Value)))
+            {
+                return Unauthorized();
+            }
+
+            var like = await _likeRepository.GetLike(id, recipientId);
+
+            if (like != null)
+            {
+                return BadRequest("You already like this user");
+            }
+
+            if (await _userRepository.GetUser(recipientId) == null)
+            {
+                return NotFound();
+            }
+
+            like = new Like
+            {
+                LikerId = id,
+                LikeeId = recipientId
+            };
+
+            if (await _likeRepository.InsertAsync(like))
+            {
+                return Ok("You liked!");
+            }
+
+            return BadRequest();
         }
     }
 }

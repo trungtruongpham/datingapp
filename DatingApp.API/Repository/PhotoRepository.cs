@@ -1,29 +1,23 @@
-using System.Collections.Generic;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using DatingApp.API.Data;
 using DatingApp.API.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using DatingApp.API.Helpers;
 
 namespace DatingApp.API.Repository
 {
-    public interface IDatingRepository
+    public interface IPhotoRepository : IBaseRepository<Photo>
     {
-        Task<User> GetUser(Guid id);
-        Task<PagedList<User>> GetUsers(UserParams userParams);
-        Task<bool> SaveAll();
         Task<Photo> GetPhoto(Guid id);
         Task<Photo> GetMainPhotoForUser(Guid userId);
         bool DeletePhoto(Photo photoToDelete);
     }
-    public class DatingRepository : BaseRepository<User>, IDatingRepository
+    public class PhotoRepository : BaseRepository<Photo>, IPhotoRepository
     {
-        public DatingRepository(AppDbContext context) : base(context)
+        public PhotoRepository(AppDbContext context) : base(context)
         {
         }
-
         public bool DeletePhoto(Photo photoToDelete)
         {
             if (photoToDelete == null)
@@ -46,25 +40,6 @@ namespace DatingApp.API.Repository
             var photo = await context.Photos.FirstOrDefaultAsync(p => p.Id.Equals(id));
 
             return photo;
-        }
-
-        public async Task<User> GetUser(Guid id)
-        {
-            var user = await context.Users.Include(p => p.Photos).FirstOrDefaultAsync(u => u.Id.Equals(id));
-
-            return user;
-        }
-
-        public async Task<PagedList<User>> GetUsers(UserParams userParams)
-        {
-            var users = context.Users.Include(p => p.Photos);
-
-            return await PagedList<User>.CreateAsync(users, userParams.PageNumber, userParams.PageSize);
-        }
-
-        public async Task<bool> SaveAll()
-        {
-            return await context.SaveChangesAsync() > 0;
         }
     }
 }

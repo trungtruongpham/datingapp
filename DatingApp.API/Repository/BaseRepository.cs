@@ -14,6 +14,7 @@ namespace DatingApp.API.Repository
         Task<bool> UpdateAsync(T entity);
         Task<bool> DeleteAsync(Guid id);
         Task<T> GetByIdAsync(Guid id);
+        Task<bool> SaveAll();
     }
     public class BaseRepository<T> : IBaseRepository<T> where T : BaseModel
     {
@@ -23,6 +24,12 @@ namespace DatingApp.API.Repository
         {
             this.context = context;
             this.dbSet = context.Set<T>();
+        }
+
+
+        public async Task<bool> SaveAll()
+        {
+            return await context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> DeleteAsync(Guid id)

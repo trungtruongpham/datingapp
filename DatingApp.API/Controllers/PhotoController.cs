@@ -23,17 +23,19 @@ namespace DatingApp.API.Controllers
     {
         private IOptions<CloudinarySettings> _cloudinaryConfig;
         private readonly IMapper _mapper;
-        private readonly IDatingRepository _repo;
+        private readonly IPhotoRepository _photoRepository;
         private readonly IActionContextAccessor _acctionContextAccessor;
+        private readonly IUserRepository _userRepository;
         private readonly Cloudinary _cloudinary;
 
-        public PhotoController(IDatingRepository repo, IMapper mapper,
+        public PhotoController(IPhotoRepository photoRepository,IUserRepository userRepository, IMapper mapper,
          IOptions<CloudinarySettings> cloudinaryConfig, IActionContextAccessor actionContextAccessor)
         {
             _cloudinaryConfig = cloudinaryConfig;
             _mapper = mapper;
-            _repo = repo;
+            _photoRepository = photoRepository;
             _acctionContextAccessor = actionContextAccessor;
+            _userRepository = userRepository;
 
             Account account = new Account(
                 _cloudinaryConfig.Value.CloudName,
@@ -47,7 +49,7 @@ namespace DatingApp.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPhoto(Guid id)
         {
-            var photoFromRepo = await _repo.GetPhoto(id);
+            var photoFromRepo = await _photoRepository.GetPhoto(id);
 
             var photo = _mapper.Map<PhotoForReturnDto>(photoFromRepo);
 
@@ -61,7 +63,7 @@ namespace DatingApp.API.Controllers
             {
                 return Unauthorized();
             }
-            var userFromRepo = await _repo.GetUser(userId);
+            var userFromRepo = await _userRepository.GetUser(userId);
 
             var file = photoForCreationDto.File;
 
@@ -93,7 +95,7 @@ namespace DatingApp.API.Controllers
 
             userFromRepo.Photos.Add(photo);
 
-            if (await _repo.SaveAll())
+            if (await _userRepository.SaveAll())
             {
                 var photoToReturn = _mapper.Map<PhotoForReturnDto>(photo);
                 return CreatedAtRoute("", new { userId = userId, id = photo.Id }, photoToReturn);
@@ -110,26 +112,26 @@ namespace DatingApp.API.Controllers
                 return Unauthorized();
             }
 
-            var user = await _repo.GetUser(userId);
+            var user = await _userRepository.GetUser(userId);
 
             if (!user.Photos.Any(p => p.Id.Equals(id)))
             {
                 return Unauthorized();
             }
 
-            var photoFromRepo = await _repo.GetPhoto(id);
+            var photoFromRepo = await _photoRepository.GetPhoto(id);
 
             if (photoFromRepo.IsMain)
             {
                 return BadRequest("This is already the main photo");
             }
 
-            var currentMainPhoto = await _repo.GetMainPhotoForUser(userId);
+            var currentMainPhoto = await _photoRepository.GetMainPhotoForUser(userId);
             currentMainPhoto.IsMain = false;
 
             photoFromRepo.IsMain = true;
 
-            if (await _repo.SaveAll())
+            if (await _photoRepository.SaveAll())
             {
                 return NoContent();
             }
@@ -145,14 +147,14 @@ namespace DatingApp.API.Controllers
                 return Unauthorized();
             }
 
-            var user = await _repo.GetUser(userId);
+            var user = await _userRepository.GetUser(userId);
 
             if (!user.Photos.Any(p => p.Id.Equals(photoId)))
             {
                 return Unauthorized();
             }
 
-            var photoFromRepo = await _repo.GetPhoto(photoId);
+            var photoFromRepo = await _photoRepository.GetPhoto(photoId);
 
             if (photoFromRepo.IsMain)
             {
@@ -166,15 +168,15 @@ namespace DatingApp.API.Controllers
 
                 if (result.Result.Equals("ok"))
                 {
-                    _repo.DeletePhoto(photoFromRepo);
+                    _photoRepository.DeletePhoto(photoFromRepo);
                 }
             }
             else
             {
-                _repo.DeletePhoto(photoFromRepo);
+                _photoRepository.DeletePhoto(photoFromRepo);
             }
 
-            if (await _repo.SaveAll())
+            if (await _photoRepository.SaveAll())
             {
                 return Ok();
             }
